@@ -3,9 +3,11 @@ async function generateQuiz() {
     const correctAnswer = document.getElementById('correctAnswer').value;
     const personalLink = document.getElementById('personalLink').value;
     const imageFile = document.getElementById('imageUpload').files[0];
+    const statusMessage = document.getElementById('statusMessage');
 
+    // Kiểm tra nếu các trường không được nhập đủ
     if (!question || !correctAnswer || !personalLink || !imageFile) {
-        alert('Vui lòng nhập đầy đủ thông tin.');
+        statusMessage.innerText = 'Vui lòng nhập đầy đủ thông tin trước khi tạo trang câu hỏi!';
         return;
     }
 
@@ -82,17 +84,17 @@ async function generateQuiz() {
             </html>
         `;
 
-        // API URL để tạo file trên GitHub repository
+        // Gửi dữ liệu lên GitHub để tạo file
         const repoOwner = 'your-username'; // Thay bằng tên người dùng GitHub của bạn
         const repoName = 'your-repo-name'; // Thay bằng tên repository của bạn
         const fileName = question.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '.html';
         const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${fileName}`;
         const token = 'your-github-token'; // Thay bằng GitHub Personal Access Token của bạn
 
-        // Base64 encode content
+        // Encode nội dung thành base64
         const encodedContent = btoa(unescape(encodeURIComponent(content)));
 
-        // Cấu trúc dữ liệu để gửi yêu cầu tạo file qua API
+        // Dữ liệu để gửi tới API GitHub
         const data = {
             message: `Tạo trang con: ${fileName}`,
             content: encodedContent
@@ -109,66 +111,18 @@ async function generateQuiz() {
             });
 
             if (response.ok) {
-                alert(`Trang câu hỏi đã được tạo! Xem tại: https://${repoOwner}.github.io/${repoName}/${fileName}`);
+                statusMessage.innerText = `Trang câu hỏi đã được tạo! Xem tại: https://${repoOwner}.github.io/${repoName}/${fileName}`;
                 window.open(`https://${repoOwner}.github.io/${repoName}/${fileName}`, '_blank');
             } else {
                 const errorData = await response.json();
                 console.error('Lỗi khi tạo trang:', errorData);
-                alert('Không thể tạo trang. Vui lòng kiểm tra lại.');
+                statusMessage.innerText = 'Không thể tạo trang. Vui lòng kiểm tra lại.';
             }
         } catch (error) {
             console.error('Lỗi:', error);
-            alert('Đã xảy ra lỗi trong quá trình tạo trang.');
+            statusMessage.innerText = 'Đã xảy ra lỗi trong quá trình tạo trang.';
         }
     };
 
     reader.readAsDataURL(imageFile);
-}
-
-let incorrectAttempts = 0;
-
-function checkAnswer(isCorrect, button) {
-    if (isCorrect) {
-        // Nếu câu trả lời đúng
-        document.getElementById('resultMessage').innerHTML = 'Chúc mừng! Bạn đã chọn đúng.';
-        document.getElementById('imageSection').style.display = 'block';
-        document.getElementById('personalInfoSection').style.display = 'block';
-    } else {
-        // Nếu câu trả lời sai
-        incorrectAttempts++;
-        moveIncorrectAnswer(button);
-    }
-}
-
-function moveIncorrectAnswer(button) {
-    const randomX = Math.random() * (window.innerWidth - button.offsetWidth);
-    const randomY = Math.random() * (window.innerHeight - button.offsetHeight);
-
-    // Di chuyển nút câu trả lời sai đến vị trí ngẫu nhiên
-    button.style.position = 'absolute';
-    button.style.left = randomX + 'px';
-    button.style.top = randomY + 'px';
-
-    // Nhân đôi/nhiều nút câu trả lời đúng sau một số lần cố gắng
-    if (incorrectAttempts === 15) {
-        alert('Bạn đã cố gắng 15 lần! Nhân đôi câu trả lời đúng.');
-        createAdditionalButton(2);
-    } else if (incorrectAttempts === 25) {
-        alert('Bạn đã cố gắng 25 lần! Nhân 3 câu trả lời đúng.');
-        createAdditionalButton(3);
-    } else if (incorrectAttempts === 35) {
-        alert('Bạn đã cố gắng 35 lần! Nhân 5 câu trả lời đúng và phóng to.');
-        createAdditionalButton(5);
-    }
-}
-
-function createAdditionalButton(multiplier) {
-    const correctButton = document.getElementById('correctAnswerButton');
-    
-    for (let i = 0; i < multiplier - 1; i++) {
-        const newButton = correctButton.cloneNode(true);
-        newButton.style.transform = 'scale(' + (1 + Math.random()) + ')'; // Phóng to ngẫu nhiên
-        newButton.onclick = () => checkAnswer(true, newButton);
-        document.body.appendChild(newButton);
-    }
 }
