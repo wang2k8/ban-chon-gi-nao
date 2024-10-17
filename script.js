@@ -1,6 +1,7 @@
 async function generateQuiz() {
     const question = document.getElementById('question').value;
     const correctAnswer = document.getElementById('correctAnswer').value;
+    const customLink = document.getElementById('customLink').value;
     const personalLink = document.getElementById('personalLink').value;
     const imageFile = document.getElementById('imageUpload').files[0];
     const statusMessage = document.getElementById('statusMessage');
@@ -11,7 +12,7 @@ async function generateQuiz() {
     statusMessage.innerText = '';
 
     // Kiểm tra nếu các trường không được nhập đủ
-    if (!question || !correctAnswer || !personalLink || !imageFile) {
+    if (!question || !correctAnswer || !customLink || !personalLink || !imageFile) {
         errorMessage.innerText = 'Vui lòng nhập đầy đủ thông tin!';
         return;
     }
@@ -118,11 +119,10 @@ async function generateQuiz() {
             </html>
         `;
 
-        // URL GitHub chính và phần cuối dựa trên thông tin người dùng
+        // URL GitHub chính và phần tên link tùy chỉnh do người dùng nhập
         const repoOwner = 'your-username'; // Thay bằng tên người dùng GitHub của bạn
         const repoName = 'your-repo-name'; // Thay bằng tên repository của bạn
-        const userDefinedLink = personalLink.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-        const fileName = `${userDefinedLink}.html`;
+        const fileName = `${customLink}.html`; // Sử dụng tên link người dùng đã nhập
         const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${fileName}`;
         const token = 'your-github-token'; // Thay bằng GitHub Personal Access Token của bạn
 
@@ -146,8 +146,8 @@ async function generateQuiz() {
             });
 
             if (response.ok) {
-                statusMessage.innerText = `Trang câu hỏi đã được tạo! Xem tại: https://${repoOwner}.github.io/${repoName}/${userDefinedLink}`;
-                window.open(`https://${repoOwner}.github.io/${repoName}/${userDefinedLink}`, '_blank');
+                statusMessage.innerText = `Trang câu hỏi đã được tạo! Xem tại: https://${repoOwner}.github.io/${repoName}/${customLink}`;
+                window.open(`https://${repoOwner}.github.io/${repoName}/${customLink}`, '_blank');
             } else {
                 const errorData = await response.json();
                 errorMessage.innerText = 'Không thể tạo trang. Vui lòng kiểm tra lại thông tin GitHub.';
