@@ -52,7 +52,7 @@ function generateQuiz() {
         <body>
             <h2>${question}</h2>
             <button onclick="checkAnswer('yes')">${correctAnswer}</button>
-            <button onclick="moveIncorrectAnswer(this)">${incorrectAnswer}</button>
+            <button id="incorrectAnswerBtn" onclick="moveIncorrectAnswer(this)">${incorrectAnswer}</button>
             ${imageUpload ? `<img src="${URL.createObjectURL(imageUpload)}" alt="Uploaded Image">` : ''}
             <div class="link"><a href="${personalLink}" target="_blank">Link trang cá nhân</a></div>
             <script>
@@ -71,6 +71,7 @@ function generateQuiz() {
                     const randomX = Math.random() * (window.innerWidth - button.offsetWidth);
                     const randomY = Math.random() * (window.innerHeight - button.offsetHeight);
 
+                    // Di chuyển nút câu trả lời sai đến vị trí ngẫu nhiên
                     button.style.position = 'absolute';
                     button.style.left = randomX + 'px';
                     button.style.top = randomY + 'px';
