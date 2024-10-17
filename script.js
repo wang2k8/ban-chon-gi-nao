@@ -1,5 +1,3 @@
-let incorrectAttempts = 0;
-
 function generateQuiz() {
     const question = document.getElementById('question').value;
     const correctAnswer = document.getElementById('correctAnswer').value;
@@ -11,80 +9,85 @@ function generateQuiz() {
         return;
     }
 
-    // Tạo phần hiển thị quiz
-    const quizDisplay = document.getElementById('quizDisplay');
-    quizDisplay.innerHTML = ''; // Xóa nội dung cũ nếu có
-    quizDisplay.style.display = 'block'; // Hiển thị khung quiz
+    // Tạo nội dung cho trang mới
+    const newWindow = window.open("", "_blank");
+    newWindow.document.write(`
+        <!DOCTYPE html>
+        <html lang="vi">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>${question}</title>
+            <style>
+                body {
+                    font-family: 'Poppins', sans-serif;
+                    background-color: #f3f4f6;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    padding: 40px;
+                    color: #333;
+                }
+                h2 {
+                    margin-bottom: 20px;
+                }
+                button {
+                    margin: 10px;
+                    padding: 12px;
+                    font-size: 18px;
+                    cursor: pointer;
+                }
+                img {
+                    max-width: 100%;
+                    margin-top: 20px;
+                }
+            </style>
+        </head>
+        <body>
+            <h2>${question}</h2>
+            <button onclick="checkAnswer('yes')">${correctAnswer}</button>
+            <button onclick="moveIncorrectAnswer(this)">${incorrectAnswer}</button>
+            ${imageUpload ? `<img src="${URL.createObjectURL(imageUpload)}" alt="Uploaded Image">` : ''}
+            <script>
+                let incorrectAttempts = 0;
 
-    const questionElement = document.createElement('h2');
-    questionElement.textContent = question;
-    quizDisplay.appendChild(questionElement);
+                function checkAnswer(selectedAnswer) {
+                    if (selectedAnswer === 'yes') {
+                        alert('Chúc mừng! Bạn đã chọn đúng.');
+                    } else {
+                        alert('Xin lỗi! Bạn đã chọn sai.');
+                    }
+                }
 
-    // Tạo nút cho câu trả lời đúng
-    const correctButton = document.createElement('button');
-    correctButton.textContent = correctAnswer;
-    correctButton.onclick = () => checkAnswer(true);
-    quizDisplay.appendChild(correctButton);
+                function moveIncorrectAnswer(button) {
+                    incorrectAttempts++;
+                    const randomX = Math.random() * (window.innerWidth - button.offsetWidth);
+                    const randomY = Math.random() * (window.innerHeight - button.offsetHeight);
 
-    // Tạo nút cho câu trả lời sai
-    const incorrectButton = document.createElement('button');
-    incorrectButton.textContent = incorrectAnswer;
-    incorrectButton.onclick = () => moveIncorrectAnswer(incorrectButton);
-    quizDisplay.appendChild(incorrectButton);
+                    button.style.position = 'absolute';
+                    button.style.left = randomX + 'px';
+                    button.style.top = randomY + 'px';
 
-    // Nếu có ảnh, hiển thị ảnh lên
-    if (imageUpload) {
-        const imageElement = document.createElement('img');
-        imageElement.src = URL.createObjectURL(imageUpload);
-        imageElement.style.maxWidth = '100%';
-        imageElement.style.marginTop = '20px';
-        quizDisplay.appendChild(imageElement);
-    }
-}
+                    if (incorrectAttempts === 15) {
+                        alert('Bạn đã cố gắng 15 lần! Nhân đôi câu trả lời đúng.');
+                        createAdditionalButton(2);
+                    } else if (incorrectAttempts === 25) {
+                        alert('Bạn đã cố gắng 25 lần! Nhân 3 câu trả lời đúng.');
+                        createAdditionalButton(3);
+                    } else if (incorrectAttempts === 35) {
+                        alert('Bạn đã cố gắng 35 lần! Nhân 5 câu trả lời đúng.');
+                        createAdditionalButton(5);
+                    }
+                }
 
-function checkAnswer(isCorrect) {
-    if (isCorrect) {
-        alert('Chúc mừng! Bạn đã chọn đúng.');
-    } else {
-        alert('Xin lỗi! Bạn đã chọn sai.');
-    }
-}
-
-function moveIncorrectAnswer(button) {
-    incorrectAttempts++;
-    
-    // Di chuyển nút đến vị trí ngẫu nhiên
-    const randomX = Math.random() * (window.innerWidth - button.offsetWidth);
-    const randomY = Math.random() * (window.innerHeight - button.offsetHeight);
-    
-    button.style.position = 'absolute';
-    button.style.left = randomX + 'px';
-    button.style.top = randomY + 'px';
-
-    // Nhân đôi, nhân 3, hoặc nhân 5 câu trả lời đúng
-    if (incorrectAttempts === 15) {
-        alert('Bạn đã cố gắng 15 lần! Nhân đôi câu trả lời đúng.');
-        createAdditionalButton(2);
-    } else if (incorrectAttempts === 25) {
-        alert('Bạn đã cố gắng 25 lần! Nhân 3 câu trả lời đúng.');
-        createAdditionalButton(3);
-    } else if (incorrectAttempts === 35) {
-        alert('Bạn đã cố gắng 35 lần! Nhân 5 câu trả lời đúng.');
-        createAdditionalButton(5);
-    }
-}
-
-function createAdditionalButton(multiplier) {
-    const quizDisplay = document.getElementById('quizDisplay');
-    const correctButton = document.createElement('button');
-    correctButton.textContent = 'Câu trả lời đúng x' + multiplier;
-    correctButton.onclick = () => checkAnswer(true);
-    quizDisplay.appendChild(correctButton);
-
-    // Phóng to các nút đúng
-    const buttons = quizDisplay.querySelectorAll('button');
-    buttons.forEach(button => {
-        button.style.transform = `scale(${multiplier})`;
-        button.style.transition = 'transform 0.5s';
-    });
+                function createAdditionalButton(multiplier) {
+                    const newButton = document.createElement('button');
+                    newButton.textContent = 'Câu trả lời đúng x' + multiplier;
+                    newButton.onclick = () => checkAnswer('yes');
+                    document.body.appendChild(newButton);
+                }
+            </script>
+        </body>
+        </html>
+    `);
 }
