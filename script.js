@@ -121,7 +121,7 @@ async function generateQuiz() {
         const repoName = 'ban-chon-gi-nao'; // Tên repository của bạn
         const fileName = `${customLink}.html`; // Sử dụng tên link người dùng đã nhập
         const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${fileName}`;
-        const token = 'your_github_token'; // Thay bằng GitHub Personal Access Token của bạn
+        const token = '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'; // Thay bằng GitHub Personal Access Token của bạn
 
         // Encode nội dung thành base64
         const encodedContent = btoa(unescape(encodeURIComponent(content)));
