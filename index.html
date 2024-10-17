@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Câu hỏi</title>
+    <title>Tạo câu hỏi</title>
     <style>
         body {
             font-family: 'Poppins', sans-serif;
@@ -14,50 +14,30 @@
             padding: 40px;
             color: #333;
         }
-        h2 {
-            margin-bottom: 20px;
-        }
-        button {
+        input, select, button {
             margin: 10px;
-            padding: 12px;
-            font-size: 18px;
-            cursor: pointer;
-        }
-        img {
-            max-width: 100%;
-            margin-top: 20px;
-            display: none;
-        }
-        .info {
-            display: none;
-        }
-        .link {
-            margin-top: 20px;
-        }
-        #resultMessage {
-            margin-top: 20px;
+            padding: 10px;
+            font-size: 16px;
         }
     </style>
 </head>
 <body>
-    <h2 id="questionTitle">Câu hỏi: Đây có phải là câu trả lời đúng?</h2>
+    <h2>Tạo câu hỏi của bạn</h2>
 
-    <!-- Đáp án -->
-    <button id="correctAnswerButton" onclick="checkAnswer(true, this)">Có</button>
-    <button id="incorrectAnswerButton" onclick="checkAnswer(false, this)">Không</button>
+    <input type="text" id="question" placeholder="Nhập câu hỏi của bạn" required>
+    
+    <select id="correctAnswer">
+        <option value="Có">Có</option>
+        <option value="Không">Không</option>
+    </select>
 
-    <!-- Kết quả hiển thị khi chọn đúng -->
-    <div id="resultMessage"></div>
+    <input type="text" id="personalLink" placeholder="Nhập link trang cá nhân của bạn" required>
 
-    <!-- Hiển thị ảnh sau khi trả lời đúng -->
-    <div id="imageSection">
-        <img id="uploadedImage" src="" alt="Uploaded Image">
-    </div>
+    <input type="file" id="imageUpload" accept="image/*">
 
-    <!-- Hiển thị thông tin cá nhân sau khi trả lời đúng -->
-    <div id="personalInfoSection" class="info">
-        <p>Thông tin cá nhân: <a id="personalLink" href="" target="_blank">Xem trang cá nhân</a></p>
-    </div>
+    <button onclick="generateQuiz()">Tạo trang câu hỏi</button>
+
+    <div id="statusMessage"></div>
 
     <script src="script.js"></script>
 </body>
