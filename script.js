@@ -1,10 +1,13 @@
+let incorrectAttempts = 0;
+
 function generateQuiz() {
     const question = document.getElementById('question').value;
-    const correctAnswer = document.querySelector('input[name="correctAnswer"]:checked').value;
+    const correctAnswer = document.getElementById('correctAnswer').value;
+    const incorrectAnswer = document.getElementById('incorrectAnswer').value;
     const imageUpload = document.getElementById('imageUpload').files[0];
 
-    if (!question || !correctAnswer) {
-        alert('Vui lòng nhập câu hỏi và chọn câu trả lời đúng.');
+    if (!question || !correctAnswer || !incorrectAnswer) {
+        alert('Vui lòng nhập đầy đủ thông tin.');
         return;
     }
 
@@ -17,15 +20,17 @@ function generateQuiz() {
     questionElement.textContent = question;
     quizDisplay.appendChild(questionElement);
 
-    const answerYesButton = document.createElement('button');
-    answerYesButton.textContent = 'Có';
-    answerYesButton.onclick = () => checkAnswer('yes', correctAnswer);
-    quizDisplay.appendChild(answerYesButton);
+    // Tạo nút cho câu trả lời đúng
+    const correctButton = document.createElement('button');
+    correctButton.textContent = correctAnswer;
+    correctButton.onclick = () => checkAnswer(true);
+    quizDisplay.appendChild(correctButton);
 
-    const answerNoButton = document.createElement('button');
-    answerNoButton.textContent = 'Không';
-    answerNoButton.onclick = () => checkAnswer('no', correctAnswer);
-    quizDisplay.appendChild(answerNoButton);
+    // Tạo nút cho câu trả lời sai
+    const incorrectButton = document.createElement('button');
+    incorrectButton.textContent = incorrectAnswer;
+    incorrectButton.onclick = () => moveIncorrectAnswer(incorrectButton);
+    quizDisplay.appendChild(incorrectButton);
 
     // Nếu có ảnh, hiển thị ảnh lên
     if (imageUpload) {
@@ -37,10 +42,49 @@ function generateQuiz() {
     }
 }
 
-function checkAnswer(selectedAnswer, correctAnswer) {
-    if (selectedAnswer === correctAnswer) {
+function checkAnswer(isCorrect) {
+    if (isCorrect) {
         alert('Chúc mừng! Bạn đã chọn đúng.');
     } else {
-        alert('Rất tiếc! Câu trả lời của bạn sai.');
+        alert('Xin lỗi! Bạn đã chọn sai.');
     }
+}
+
+function moveIncorrectAnswer(button) {
+    incorrectAttempts++;
+    
+    // Di chuyển nút đến vị trí ngẫu nhiên
+    const randomX = Math.random() * (window.innerWidth - button.offsetWidth);
+    const randomY = Math.random() * (window.innerHeight - button.offsetHeight);
+    
+    button.style.position = 'absolute';
+    button.style.left = randomX + 'px';
+    button.style.top = randomY + 'px';
+
+    // Nhân đôi, nhân 3, hoặc nhân 5 câu trả lời đúng
+    if (incorrectAttempts === 15) {
+        alert('Bạn đã cố gắng 15 lần! Nhân đôi câu trả lời đúng.');
+        createAdditionalButton(2);
+    } else if (incorrectAttempts === 25) {
+        alert('Bạn đã cố gắng 25 lần! Nhân 3 câu trả lời đúng.');
+        createAdditionalButton(3);
+    } else if (incorrectAttempts === 35) {
+        alert('Bạn đã cố gắng 35 lần! Nhân 5 câu trả lời đúng.');
+        createAdditionalButton(5);
+    }
+}
+
+function createAdditionalButton(multiplier) {
+    const quizDisplay = document.getElementById('quizDisplay');
+    const correctButton = document.createElement('button');
+    correctButton.textContent = 'Câu trả lời đúng x' + multiplier;
+    correctButton.onclick = () => checkAnswer(true);
+    quizDisplay.appendChild(correctButton);
+
+    // Phóng to các nút đúng
+    const buttons = quizDisplay.querySelectorAll('button');
+    buttons.forEach(button => {
+        button.style.transform = `scale(${multiplier})`;
+        button.style.transition = 'transform 0.5s';
+    });
 }
