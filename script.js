@@ -11,6 +11,8 @@ function generateQuiz() {
 
     // Tạo nội dung cho trang mới
     const newWindow = window.open("", "_blank");
+
+    // Viết HTML cho trang mới
     newWindow.document.write(`
         <!DOCTYPE html>
         <html lang="vi">
@@ -90,4 +92,6 @@ function generateQuiz() {
         </body>
         </html>
     `);
+
+    newWindow.document.close(); // Đóng document để đảm bảo tất cả nội dung đã được render
 }
