@@ -4,10 +4,15 @@ async function generateQuiz() {
     const personalLink = document.getElementById('personalLink').value;
     const imageFile = document.getElementById('imageUpload').files[0];
     const statusMessage = document.getElementById('statusMessage');
+    const errorMessage = document.getElementById('errorMessage');
+
+    // Xóa các thông báo lỗi trước đó
+    errorMessage.innerText = '';
+    statusMessage.innerText = '';
 
     // Kiểm tra nếu các trường không được nhập đủ
     if (!question || !correctAnswer || !personalLink || !imageFile) {
-        statusMessage.innerText = 'Vui lòng nhập đầy đủ thông tin trước khi tạo trang câu hỏi!';
+        errorMessage.innerText = 'Vui lòng nhập đầy đủ thông tin!';
         return;
     }
 
@@ -27,7 +32,7 @@ async function generateQuiz() {
                 <style>
                     body {
                         font-family: 'Poppins', sans-serif;
-                        background-color: #f3f4f6;
+                        background-color: #f0f4f8;
                         display: flex;
                         flex-direction: column;
                         align-items: center;
@@ -35,6 +40,7 @@ async function generateQuiz() {
                         color: #333;
                     }
                     h2 {
+                        font-size: 28px;
                         margin-bottom: 20px;
                     }
                     button {
@@ -42,6 +48,14 @@ async function generateQuiz() {
                         padding: 12px;
                         font-size: 18px;
                         cursor: pointer;
+                        border: none;
+                        border-radius: 4px;
+                        background-color: #007bff;
+                        color: white;
+                        font-weight: bold;
+                    }
+                    button:hover {
+                        background-color: #0056b3;
                     }
                     img {
                         max-width: 100%;
@@ -56,6 +70,8 @@ async function generateQuiz() {
                     }
                     #resultMessage {
                         margin-top: 20px;
+                        font-size: 18px;
+                        color: green;
                     }
                 </style>
             </head>
@@ -79,7 +95,25 @@ async function generateQuiz() {
                     <p>Thông tin cá nhân: <a id="personalLink" href="${personalLink}" target="_blank">Xem trang cá nhân</a></p>
                 </div>
 
-                <script src="script.js"></script>
+                <script>
+                    function checkAnswer(isCorrect, element) {
+                        if (isCorrect) {
+                            document.getElementById('resultMessage').innerText = 'Bạn đã chọn đúng!';
+                            document.getElementById('uploadedImage').style.display = 'block';
+                            document.getElementById('personalInfoSection').style.display = 'block';
+                        } else {
+                            moveIncorrectAnswer(element);
+                        }
+                    }
+
+                    function moveIncorrectAnswer(element) {
+                        const x = Math.random() * (window.innerWidth - element.offsetWidth);
+                        const y = Math.random() * (window.innerHeight - element.offsetHeight);
+                        element.style.position = 'absolute';
+                        element.style.left = x + 'px';
+                        element.style.top = y + 'px';
+                    }
+                </script>
             </body>
             </html>
         `;
@@ -115,12 +149,12 @@ async function generateQuiz() {
                 window.open(`https://${repoOwner}.github.io/${repoName}/${fileName}`, '_blank');
             } else {
                 const errorData = await response.json();
+                errorMessage.innerText = 'Không thể tạo trang. Vui lòng kiểm tra lại thông tin GitHub.';
                 console.error('Lỗi khi tạo trang:', errorData);
-                statusMessage.innerText = 'Không thể tạo trang. Vui lòng kiểm tra lại.';
             }
         } catch (error) {
+            errorMessage.innerText = 'Đã xảy ra lỗi trong quá trình tạo trang.';
             console.error('Lỗi:', error);
-            statusMessage.innerText = 'Đã xảy ra lỗi trong quá trình tạo trang.';
         }
     };
 
