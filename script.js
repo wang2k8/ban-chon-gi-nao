@@ -66,9 +66,6 @@ async function generateQuiz() {
                     .info {
                         display: none;
                     }
-                    .link {
-                        margin-top: 20px;
-                    }
                     #resultMessage {
                         margin-top: 20px;
                         font-size: 18px;
@@ -80,8 +77,8 @@ async function generateQuiz() {
                 <h2>${question}</h2>
 
                 <!-- Đáp án -->
-                <button id="correctAnswerButton" onclick="checkAnswer(true, this)">Có</button>
-                <button id="incorrectAnswerButton" onclick="checkAnswer(false, this)">Không</button>
+                <button id="correctAnswerButton" onclick="checkAnswer(true)">Có</button>
+                <button id="incorrectAnswerButton" onclick="checkAnswer(false)">Không</button>
 
                 <!-- Kết quả hiển thị khi chọn đúng -->
                 <div id="resultMessage"></div>
@@ -93,17 +90,17 @@ async function generateQuiz() {
 
                 <!-- Hiển thị thông tin cá nhân sau khi trả lời đúng -->
                 <div id="personalInfoSection" class="info">
-                    <p>Thông tin cá nhân: <a id="personalLink" href="${personalLink}" target="_blank">Xem trang cá nhân</a></p>
+                    <p>Thông tin cá nhân: <a href="${personalLink}" target="_blank">Xem trang cá nhân</a></p>
                 </div>
 
                 <script>
-                    function checkAnswer(isCorrect, element) {
+                    function checkAnswer(isCorrect) {
                         if (isCorrect) {
                             document.getElementById('resultMessage').innerText = 'Bạn đã chọn đúng!';
                             document.getElementById('uploadedImage').style.display = 'block';
                             document.getElementById('personalInfoSection').style.display = 'block';
                         } else {
-                            moveIncorrectAnswer(element);
+                            moveIncorrectAnswer(event.target);
                         }
                     }
 
@@ -124,7 +121,7 @@ async function generateQuiz() {
         const repoName = 'ban-chon-gi-nao'; // Tên repository của bạn
         const fileName = `${customLink}.html`; // Sử dụng tên link người dùng đã nhập
         const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${fileName}`;
-        const token = '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'; // Thay bằng GitHub Personal Access Token của bạn
+        const token = 'your_github_token'; // Thay bằng GitHub Personal Access Token của bạn
 
         // Encode nội dung thành base64
         const encodedContent = btoa(unescape(encodeURIComponent(content)));
@@ -151,7 +148,7 @@ async function generateQuiz() {
             } else {
                 const errorData = await response.json();
                 errorMessage.innerText = 'Không thể tạo trang. Vui lòng kiểm tra lại thông tin GitHub.';
-                console.error('Lỗi khi tạo trang:', errorData); // Hiển thị chi tiết lỗi từ GitHub
+                console.error('Lỗi khi tạo trang:', errorData);
             }
         } catch (error) {
             errorMessage.innerText = 'Đã xảy ra lỗi trong quá trình tạo trang.';
