@@ -3,8 +3,9 @@ function generateQuiz() {
     const correctAnswer = document.getElementById('correctAnswer').value;
     const incorrectAnswer = document.getElementById('incorrectAnswer').value;
     const imageUpload = document.getElementById('imageUpload').files[0];
+    const personalLink = document.getElementById('personalLink').value;
 
-    if (!question || !correctAnswer || !incorrectAnswer) {
+    if (!question || !correctAnswer || !incorrectAnswer || !personalLink) {
         alert('Vui lòng nhập đầy đủ thông tin.');
         return;
     }
@@ -43,6 +44,9 @@ function generateQuiz() {
                     max-width: 100%;
                     margin-top: 20px;
                 }
+                .link {
+                    margin-top: 20px;
+                }
             </style>
         </head>
         <body>
@@ -50,6 +54,7 @@ function generateQuiz() {
             <button onclick="checkAnswer('yes')">${correctAnswer}</button>
             <button onclick="moveIncorrectAnswer(this)">${incorrectAnswer}</button>
             ${imageUpload ? `<img src="${URL.createObjectURL(imageUpload)}" alt="Uploaded Image">` : ''}
+            <div class="link"><a href="${personalLink}" target="_blank">Link trang cá nhân</a></div>
             <script>
                 let incorrectAttempts = 0;
 
@@ -70,6 +75,7 @@ function generateQuiz() {
                     button.style.left = randomX + 'px';
                     button.style.top = randomY + 'px';
 
+                    // Nhân đôi/nhiều nút câu trả lời đúng
                     if (incorrectAttempts === 15) {
                         alert('Bạn đã cố gắng 15 lần! Nhân đôi câu trả lời đúng.');
                         createAdditionalButton(2);
@@ -86,6 +92,7 @@ function generateQuiz() {
                     const newButton = document.createElement('button');
                     newButton.textContent = 'Câu trả lời đúng x' + multiplier;
                     newButton.onclick = () => checkAnswer('yes');
+                    newButton.style.transform = 'scale(' + (1 + multiplier / 10) + ')'; // Phóng to ngẫu nhiên
                     document.body.appendChild(newButton);
                 }
             </script>
