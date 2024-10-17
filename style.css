@@ -9,9 +9,9 @@ body {
     font-family: 'Poppins', sans-serif;
     background-color: #f3f4f6;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
-    height: 100vh;
+    padding: 40px;
     color: #333;
 }
 
@@ -22,11 +22,17 @@ body {
     padding: 40px;
     max-width: 500px;
     width: 100%;
-    transition: transform 0.3s;
 }
 
-.container:hover {
-    transform: translateY(-5px);
+.quiz-container {
+    margin-top: 30px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+    max-width: 500px;
+    width: 100%;
+    display: none; /* Ẩn trang quiz ban đầu */
 }
 
 .title {
@@ -65,11 +71,6 @@ input:focus, select:focus {
     outline: none;
 }
 
-input[type="file"] {
-    padding: 0;
-    background-color: transparent;
-}
-
 .btn {
     width: 100%;
     padding: 12px;
@@ -89,10 +90,6 @@ input[type="file"] {
 
 .btn:active {
     transform: translateY(0);
-}
-
-input::placeholder {
-    color: #aaa;
 }
 
 /* Responsive adjustments */
