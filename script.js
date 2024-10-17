@@ -118,10 +118,11 @@ async function generateQuiz() {
             </html>
         `;
 
-        // Gửi dữ liệu lên GitHub để tạo file
+        // URL GitHub chính và phần cuối dựa trên thông tin người dùng
         const repoOwner = 'your-username'; // Thay bằng tên người dùng GitHub của bạn
         const repoName = 'your-repo-name'; // Thay bằng tên repository của bạn
-        const fileName = question.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '.html';
+        const userDefinedLink = personalLink.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+        const fileName = `${userDefinedLink}.html`;
         const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${fileName}`;
         const token = 'your-github-token'; // Thay bằng GitHub Personal Access Token của bạn
 
@@ -145,8 +146,8 @@ async function generateQuiz() {
             });
 
             if (response.ok) {
-                statusMessage.innerText = `Trang câu hỏi đã được tạo! Xem tại: https://${repoOwner}.github.io/${repoName}/${fileName}`;
-                window.open(`https://${repoOwner}.github.io/${repoName}/${fileName}`, '_blank');
+                statusMessage.innerText = `Trang câu hỏi đã được tạo! Xem tại: https://${repoOwner}.github.io/${repoName}/${userDefinedLink}`;
+                window.open(`https://${repoOwner}.github.io/${repoName}/${userDefinedLink}`, '_blank');
             } else {
                 const errorData = await response.json();
                 errorMessage.innerText = 'Không thể tạo trang. Vui lòng kiểm tra lại thông tin GitHub.';
