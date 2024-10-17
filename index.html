@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz Có/Không</title>
+    <title>Tạo Câu Hỏi Có/Không</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -18,28 +18,31 @@
             <div class="form-group">
                 <label>Chọn câu trả lời đúng:</label>
                 <div class="answer-group">
-                    <input type="radio" id="correctYes" name="correctAnswer" value="yes">
+                    <input type="radio" id="correctYes" name="correctAnswer" value="yes" required>
                     <label for="correctYes">Có</label>
                 </div>
                 <div class="answer-group">
-                    <input type="radio" id="correctNo" name="correctAnswer" value="no">
+                    <input type="radio" id="correctNo" name="correctAnswer" value="no" required>
                     <label for="correctNo">Không</label>
                 </div>
             </div>
 
             <div class="form-group">
-                <label for="imageUpload">Tải ảnh lên:</label>
+                <label for="imageUpload">Tải ảnh lên (tuỳ chọn):</label>
                 <input type="file" id="imageUpload" name="imageUpload" accept="image/*">
             </div>
 
             <div class="form-group">
-                <label for="personalLink">Link trang cá nhân:</label>
+                <label for="personalLink">Link trang cá nhân (tuỳ chọn):</label>
                 <input type="url" id="personalLink" name="personalLink" placeholder="https://">
             </div>
 
             <button type="button" class="btn" onclick="generateQuiz()">Tạo trang câu hỏi</button>
         </form>
     </div>
+
+    <div id="quizDisplay" class="quiz-container"></div>
+
     <script src="script.js"></script>
 </body>
 </html>
