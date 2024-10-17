@@ -1,8 +1,7 @@
-function generateQuiz() {
+async function generateQuiz() {
     const question = document.getElementById('question').value;
     const correctAnswer = document.getElementById('correctAnswer').value;
     const incorrectAnswer = document.getElementById('incorrectAnswer').value;
-    const imageUpload = document.getElementById('imageUpload').files[0];
     const personalLink = document.getElementById('personalLink').value;
 
     if (!question || !correctAnswer || !incorrectAnswer || !personalLink) {
@@ -10,11 +9,8 @@ function generateQuiz() {
         return;
     }
 
-    // Tạo nội dung cho trang mới
-    const newWindow = window.open("", "_blank");
-
-    // Viết HTML cho trang mới
-    newWindow.document.write(`
+    // Nội dung trang con cần tạo
+    const content = `
         <!DOCTYPE html>
         <html lang="vi">
         <head>
@@ -51,55 +47,51 @@ function generateQuiz() {
         </head>
         <body>
             <h2>${question}</h2>
-            <button onclick="checkAnswer('yes')">${correctAnswer}</button>
+            <button onclick="alert('Chúc mừng! Bạn đã chọn đúng.')">${correctAnswer}</button>
             <button id="incorrectAnswerBtn" onclick="moveIncorrectAnswer(this)">${incorrectAnswer}</button>
-            ${imageUpload ? `<img src="${URL.createObjectURL(imageUpload)}" alt="Uploaded Image">` : ''}
             <div class="link"><a href="${personalLink}" target="_blank">Link trang cá nhân</a></div>
-            <script>
-                let incorrectAttempts = 0;
-
-                function checkAnswer(selectedAnswer) {
-                    if (selectedAnswer === 'yes') {
-                        alert('Chúc mừng! Bạn đã chọn đúng.');
-                    } else {
-                        alert('Xin lỗi! Bạn đã chọn sai.');
-                    }
-                }
-
-                function moveIncorrectAnswer(button) {
-                    incorrectAttempts++;
-                    const randomX = Math.random() * (window.innerWidth - button.offsetWidth);
-                    const randomY = Math.random() * (window.innerHeight - button.offsetHeight);
-
-                    // Di chuyển nút câu trả lời sai đến vị trí ngẫu nhiên
-                    button.style.position = 'absolute';
-                    button.style.left = randomX + 'px';
-                    button.style.top = randomY + 'px';
-
-                    // Nhân đôi/nhiều nút câu trả lời đúng
-                    if (incorrectAttempts === 15) {
-                        alert('Bạn đã cố gắng 15 lần! Nhân đôi câu trả lời đúng.');
-                        createAdditionalButton(2);
-                    } else if (incorrectAttempts === 25) {
-                        alert('Bạn đã cố gắng 25 lần! Nhân 3 câu trả lời đúng.');
-                        createAdditionalButton(3);
-                    } else if (incorrectAttempts === 35) {
-                        alert('Bạn đã cố gắng 35 lần! Nhân 5 câu trả lời đúng.');
-                        createAdditionalButton(5);
-                    }
-                }
-
-                function createAdditionalButton(multiplier) {
-                    const newButton = document.createElement('button');
-                    newButton.textContent = 'Câu trả lời đúng x' + multiplier;
-                    newButton.onclick = () => checkAnswer('yes');
-                    newButton.style.transform = 'scale(' + (1 + multiplier / 10) + ')'; // Phóng to ngẫu nhiên
-                    document.body.appendChild(newButton);
-                }
-            </script>
         </body>
         </html>
-    `);
+    `;
 
-    newWindow.document.close(); // Đóng document để đảm bảo tất cả nội dung đã được render
+    // Tạo file HTML với tên dựa trên câu hỏi
+    const fileName = question.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '.html';
+
+    // API URL để tạo file trên GitHub repository
+    const repoOwner = 'your-username'; // Thay bằng tên người dùng GitHub của bạn
+    const repoName = 'your-repo-name'; // Thay bằng tên repository của bạn
+    const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${fileName}`;
+    const token = 'your-github-token'; // Thay bằng GitHub Personal Access Token của bạn
+
+    // Base64 encode content
+    const encodedContent = btoa(unescape(encodeURIComponent(content)));
+
+    // Cấu trúc dữ liệu để gửi yêu cầu tạo file qua API
+    const data = {
+        message: `Tạo trang con: ${fileName}`,
+        content: encodedContent
+    };
+
+    try {
+        const response = await fetch(apiUrl, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `token ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+            alert(`Trang câu hỏi đã được tạo! Xem tại: https://${repoOwner}.github.io/${repoName}/${fileName}`);
+            window.open(`https://${repoOwner}.github.io/${repoName}/${fileName}`, '_blank');
+        } else {
+            const errorData = await response.json();
+            console.error('Lỗi khi tạo trang:', errorData);
+            alert('Không thể tạo trang. Vui lòng kiểm tra lại.');
+        }
+    } catch (error) {
+        console.error('Lỗi:', error);
+        alert('Đã xảy ra lỗi trong quá trình tạo trang.');
+    }
 }
