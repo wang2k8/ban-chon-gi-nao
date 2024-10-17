@@ -3,40 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tạo Câu Hỏi Có/Không</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Câu hỏi</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f3f4f6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px;
+            color: #333;
+        }
+        h2 {
+            margin-bottom: 20px;
+        }
+        button {
+            margin: 10px;
+            padding: 12px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        img {
+            max-width: 100%;
+            margin-top: 20px;
+            display: none;
+        }
+        .info {
+            display: none;
+        }
+        .link {
+            margin-top: 20px;
+        }
+        #resultMessage {
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h1 class="title">Tạo câu hỏi của bạn</h1>
-        <form id="quizForm">
-            <div class="form-group">
-                <label for="question">Nhập câu hỏi:</label>
-                <input type="text" id="question" name="question" required>
-            </div>
+    <h2 id="questionTitle">Câu hỏi: Đây có phải là câu trả lời đúng?</h2>
 
-            <div class="form-group">
-                <label for="correctAnswer">Nhập câu trả lời đúng:</label>
-                <input type="text" id="correctAnswer" name="correctAnswer" required>
-            </div>
+    <!-- Đáp án -->
+    <button id="correctAnswerButton" onclick="checkAnswer(true, this)">Có</button>
+    <button id="incorrectAnswerButton" onclick="checkAnswer(false, this)">Không</button>
 
-            <div class="form-group">
-                <label for="incorrectAnswer">Nhập câu trả lời sai:</label>
-                <input type="text" id="incorrectAnswer" name="incorrectAnswer" required>
-            </div>
+    <!-- Kết quả hiển thị khi chọn đúng -->
+    <div id="resultMessage"></div>
 
-            <div class="form-group">
-                <label for="imageUpload">Tải ảnh lên (tuỳ chọn):</label>
-                <input type="file" id="imageUpload" name="imageUpload" accept="image/*">
-            </div>
+    <!-- Hiển thị ảnh sau khi trả lời đúng -->
+    <div id="imageSection">
+        <img id="uploadedImage" src="" alt="Uploaded Image">
+    </div>
 
-            <div class="form-group">
-                <label for="personalLink">Nhập link trang cá nhân:</label>
-                <input type="url" id="personalLink" name="personalLink" required>
-            </div>
-
-            <button type="button" class="btn" onclick="generateQuiz()">Tạo trang câu hỏi</button>
-        </form>
+    <!-- Hiển thị thông tin cá nhân sau khi trả lời đúng -->
+    <div id="personalInfoSection" class="info">
+        <p>Thông tin cá nhân: <a id="personalLink" href="" target="_blank">Xem trang cá nhân</a></p>
     </div>
 
     <script src="script.js"></script>
