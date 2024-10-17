@@ -120,8 +120,8 @@ async function generateQuiz() {
         `;
 
         // URL GitHub chính và phần tên link tùy chỉnh do người dùng nhập
-        const repoOwner = 'your-username'; // Thay bằng tên người dùng GitHub của bạn
-        const repoName = 'your-repo-name'; // Thay bằng tên repository của bạn
+        const repoOwner = 'wang2k8'; // Tên người dùng GitHub của bạn
+        const repoName = 'ban-chon-gi-nao'; // Tên repository của bạn
         const fileName = `${customLink}.html`; // Sử dụng tên link người dùng đã nhập
         const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${fileName}`;
         const token = 'your-github-token'; // Thay bằng GitHub Personal Access Token của bạn
@@ -146,12 +146,12 @@ async function generateQuiz() {
             });
 
             if (response.ok) {
-                statusMessage.innerText = `Trang câu hỏi đã được tạo! Xem tại: https://${repoOwner}.github.io/${repoName}/${customLink}`;
-                window.open(`https://${repoOwner}.github.io/${repoName}/${customLink}`, '_blank');
+                statusMessage.innerText = `Trang câu hỏi đã được tạo! Xem tại: https://wang2k8.github.io/ban-chon-gi-nao/${customLink}`;
+                window.open(`https://wang2k8.github.io/ban-chon-gi-nao/${customLink}`, '_blank');
             } else {
                 const errorData = await response.json();
                 errorMessage.innerText = 'Không thể tạo trang. Vui lòng kiểm tra lại thông tin GitHub.';
-                console.error('Lỗi khi tạo trang:', errorData);
+                console.error('Lỗi khi tạo trang:', errorData); // Hiển thị chi tiết lỗi từ GitHub
             }
         } catch (error) {
             errorMessage.innerText = 'Đã xảy ra lỗi trong quá trình tạo trang.';
